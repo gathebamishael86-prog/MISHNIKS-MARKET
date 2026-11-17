@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MISHNIKS MARKET</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f5f7;color:#171923}
+header{background:#101827;color:white;padding:20px}
+header h1{margin:0;color:#54d47b}
+header p{margin:7px 0}
+nav{display:flex;gap:18px;padding:14px;background:#172338;color:white;flex-wrap:wrap}
+nav a{color:white;text-decoration:none;font-weight:bold}
+main{padding:18px;max-width:1000px;margin:auto}
+.hero{background:#14243b;color:white;padding:28px;border-radius:14px}
+.hero h2{font-size:27px}
+input,select,button{padding:13px;border-radius:8px;border:1px solid #ddd;font-size:15px}
+input{width:100%;margin:8px 0}
+button{background:#159447;color:white;border:0;font-weight:bold;cursor:pointer}
+.section{margin-top:25px}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:14px}
+.product{background:white;padding:12px;border-radius:12px;box-shadow:0 2px 8px #ddd}
+.product .photo{font-size:55px;text-align:center;background:#eef1f5;padding:18px;border-radius:9px}
+.product h3{font-size:16px}
+.price{font-weight:bold;color:#128343}
+small{color:#666}
+.panel{background:white;padding:17px;border-radius:12px;margin-top:18px}
+footer{background:#101827;color:white;text-align:center;padding:25px;margin-top:35px}
+</style>
+</head>
+<body>
+<header>
+<h1>✚ MISHNIKS MARKET</h1>
+<p>Buy and sell worldwide</p>
+</header>
+<nav>
+<a href="#home">Home</a>
+<a href="#products">Shop</a>
+<a href="#sell">Sell</a>
+<a href="#cart">Cart (<span id="cart">0</span>)</a>
+</nav>
+<main>
+<section class="hero" id="home">
+<h2>Welcome to MISHNIKS MARKET</h2>
+<p>Your worldwide marketplace. Discover products and start selling today.</p>
+<input id="search" placeholder="Search products..." oninput="render()">
+</section>
+
+<section class="section">
+<h2>Shop by category</h2>
+<select id="category" onchange="render()">
+<option value="All">All categories</option>
+<option>Electronics</option>
+<option>Fashion</option>
+<option>Home</option>
+<option>Vehicles</option>
+<option>Other</option>
+</select>
+</section>
+
+<section class="section" id="products">
+<h2>Featured products</h2>
+<div class="products" id="listing"></div>
+</section>
+
+<section class="panel" id="sell">
+<h2>Start selling</h2>
+<p>List your product on MISHNIKS MARKET.</p>
+<input id="productName" placeholder="Product name">
+<input id="productPrice" type="number" placeholder="Price in USD">
+<select id="productCategory">
+<option>Electronics</option>
+<option>Fashion</option>
+<option>Home</option>
+<option>Vehicles</option>
+<option>Other</option>
+</select>
+<button onclick="addProduct()">Publish product</button>
+</section>
+
+<section class="panel" id="cart">
+<h2>Your shopping cart</h2>
+<p id="cartInfo">Your cart is empty.</p>
+<p>Marketplace commission: 10% per sale.</p>
+</section>
+
+<section class="panel">
+<h2>Currency</h2>
+<select id="currency" onchange="render()">
+<option value="USD">USD ($)</option>
+<option value="UGX">UGX (USh)</option>
+</select>
+<p>USD and local currency support.</p>
+</section>
+</main>
+
+<footer>
+<h3>MISHNIKS MARKET</h3>
+<p>Buy worldwide. Sell worldwide.</p>
+<p>© 2026 MISHNIKS MARKET</p>
+</footer>
+
+<script>
+let products=[
+{name:"Smartphone",price:120,category:"Electronics",emoji:"📱"},
+{name:"Fashion Shoes",price:35,category:"Fashion",emoji:"👟"},
+{name:"Laptop",price:450,category:"Electronics",emoji:"💻"},
+{name:"Home Furniture",price:180,category:"Home",emoji:"🛋️"},
+{name:"Wrist Watch",price:25,category:"Fashion",emoji:"⌚"}
+];
+let cart=0;
+function money(n){
+let currency=document.getElementById("currency").value;
+return currency==="USD"?"$"+n.toFixed(2):"USh "+Math.round(n*3700).toLocaleString();
+}
+function render(){
+let q=document.getElementById("search").value.toLowerCase();
+let c=document.getElementById("category").value;
+let filtered=products.filter(p=>p.name.toLowerCase().includes(q)&&(c==="All"||p.category===c));
+document.getElementById("listing").innerHTML=filtered.map((p,i)=>`
+<div class="product">
+<div class="photo">${p.emoji}</div>
+<h3>${p.name}</h3>
+<p>${p.category}</p>
+<p class="price">${money(p.price)}</p>
+<button onclick="addCart()">Add to cart</button>
+</div>`).join("")||"<p>No products found.</p>";
+}
+function addCart(){
+cart++;
+document.getElementById("cart").innerText=cart;
+document.getElementById("cartInfo").innerText=cart+" item(s) in your cart.";
+}
+function addProduct(){
+let name=document.getElementById("productName").value.trim();
+let price=Number(document.getElementById("productPrice").value);
+let category=document.getElementById("productCategory").value;
+if(!name||!Number.isFinite(price)||price<=0){
+alert("Enter a product name and valid price.");
+return;
+}
+products.push({name,price,category,emoji:"📦"});
+document.getElementById("productName").value="";
+document.getElementById("productPrice").value="";
+render();
+alert("Product added to this preview!");
+}
+render();
+</script>
+</body>
+</html>
